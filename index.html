@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>AYub khAn SMS Bomber</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --gold-primary: #ff00ff;
+            --gold-light: #00ffff;
+            --gold-pale: #ff66ff;
+            --gold-dark: #cc00cc;
+            --gold-bg: #f5f5f7;
+            --gold-card: rgba(255, 255, 255, 0.9);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --border-color: rgba(255, 0, 255, 0.4);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --input-text: #1a1a2e;
+            --input-placeholder: #8888aa;
+            --bg-elements-opacity: 0.3;
+            --hover-glow: rgba(255, 0, 255, 0.3);
+            --btn-gradient: linear-gradient(135deg, #ff00ff 0%, #00ffff 50%, #ff00cc 100%);
+            --btn-text: #ffffff;
+            --btn-shadow: 0 10px 40px rgba(255, 0, 255, 0.4);
+            --btn-hover-shadow: 0 15px 60px rgba(0, 255, 255, 0.5);
+            --btn-hover-gradient: linear-gradient(135deg, #ff66ff 0%, #66ffff 50%, #ff00ff 100%);
+            --orb-gradient: radial-gradient(circle, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.2), transparent 70%);
+            --icon-bg: rgba(255, 0, 255, 0.1);
+            --profile-border: #ff00ff;
+            --profile-shadow: rgba(255, 0, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ee 50%, #f0f0f5 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+            padding: 1.5rem;
+            color: var(--text-primary);
+            transition: all 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .bg-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: var(--bg-elements-opacity);
+            animation: float 20s infinite alternate ease-in-out;
+            background: var(--orb-gradient);
+        }
+
+        .orb1 { width: 300px; height: 300px; top: -50px; left: -50px; }
+        .orb2 { width: 250px; height: 250px; bottom: -30px; right: -40px; background: radial-gradient(circle, rgba(0,255,255,0.3), rgba(255,0,255,0.1), transparent 70%); }
+        .orb3 { width: 200px; height: 200px; top: 40%; left: 60%; background: radial-gradient(circle, rgba(255,0,204,0.2), rgba(0,255,255,0.2), transparent 70%); }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { transform: translate(30px, -20px) scale(1.2) rotate(10deg); }
+        }
+
+        .card {
+            max-width: 520px;
+            width: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 2.5rem;
+            padding: 2.6rem 2.2rem 2.3rem;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.18), 0 18px 36px -18px rgba(0, 0, 0, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--border-color);
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: -60px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header, .form-group, .btn-bomb, #responseBox, .footer, .request-info, .popup-trigger {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.2rem;
+        }
+
+        .header .icon {
+            font-size: 2.5rem;
+            color: var(--gold-primary);
+            background: rgba(255, 0, 255, 0.1);
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 25px var(--profile-shadow), inset 0 0 0 2px rgba(255, 255, 255, 0.8);
+            animation: pulse-light 2.8s infinite;
+            border: 1px solid var(--gold-primary);
+        }
+
+        @keyframes pulse-light {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.5), inset 0 0 0 2px rgba(255, 255, 255, 0.8); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 0, 255, 0), inset 0 0 0 2px rgba(255, 255, 255, 0.8); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0), inset 0 0 0 2px rgba(255, 255, 255, 0.8); }
+        }
+
+        .header h1 {
+            color: var(--text-primary);
+            font-size: 2.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.2rem;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.4);
+        }
+
+        .header h1 span {
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .sub {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .header .sub strong {
+            color: var(--gold-primary);
+            font-weight: 700;
+        }
+
+        .popup-trigger {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .popup-trigger button {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(8px);
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            color: var(--gold-primary);
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(255,0,255,0.1);
+        }
+
+        .popup-trigger button:hover {
+            background: rgba(255, 0, 255, 0.15);
+            border-color: var(--gold-primary);
+            box-shadow: 0 10px 20px var(--hover-glow);
+            transform: translateY(-2px);
+            color: var(--gold-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: var(--gold-primary);
+            width: 20px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: var(--input-bg);
+            border-radius: 1.3rem;
+            padding: 0.3rem 0.3rem 0.3rem 1.2rem;
+            border: 1px solid rgba(255, 0, 255, 0.2);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--gold-primary);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 4px rgba(255, 0, 255, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .input-wrapper .prefix {
+            color: var(--gold-dark);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-right: 8px;
+            border-right: 2px solid rgba(255, 0, 255, 0.2);
+            padding-right: 12px;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 0.9rem 0.8rem;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--input-text);
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .input-wrapper input::placeholder {
+            color: var(--input-placeholder);
+            font-weight: 400;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .btn-bomb {
+            width: 100%;
+            padding: 1.15rem;
+            background: var(--btn-gradient);
+            background-size: 200% auto;
+            border: none;
+            border-radius: 1.9rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--btn-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--btn-shadow), inset 0 1px 0 rgba(255,255,255,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .btn-bomb:hover {
+            background: var(--btn-hover-gradient);
+            background-size: 200% auto;
+            transform: translateY(-3px);
+            box-shadow: var(--btn-hover-shadow), inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+
+        .btn-bomb:active {
+            transform: scale(0.98) translateY(0);
+        }
+
+        .btn-bomb.loading {
+            background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+            color: #475569;
+            box-shadow: none;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-bomb .btn-text, .btn-bomb .btn-loader {
+            transition: all 0.3s ease;
+        }
+
+        .btn-bomb .btn-loader {
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-bomb.loading .btn-text {
+            display: none;
+        }
+        .btn-bomb.loading .btn-loader {
+            display: flex;
+        }
+
+        .btn-bomb .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(71, 85, 105, 0.25);
+            border-top: 3px solid #475569;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #responseBox {
+            margin-top: 1.9rem;
+            padding: 1.2rem 1.5rem;
+            border-radius: 1.3rem;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 0, 255, 0.3);
+            border-left: 6px solid var(--gold-primary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.05);
+        }
+
+        #responseBox i {
+            color: var(--gold-primary);
+            font-size: 1.6rem;
+        }
+
+        .footer {
+            margin-top: 2.2rem;
+            padding-top: 1.6rem;
+            border-top: 1px solid rgba(255, 0, 255, 0.2);
+            text-align: center;
+        }
+
+        .footer .dev {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .footer .dev strong {
+            color: var(--text-primary);
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .channel-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 0.8rem;
+        }
+
+        .channel-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 0, 255, 0.25);
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+        }
+
+        .channel-links a i {
+            color: var(--gold-primary);
+        }
+
+        .channel-links a:hover {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 16px var(--hover-glow);
+            border-color: var(--gold-primary);
+            transform: translateY(-2px);
+        }
+
+        .request-info {
+            margin-top: 0.9rem;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 0.9rem;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            display: none;
+            font-family: monospace;
+            word-break: break-all;
+            border: 1px dashed var(--gold-primary);
+        }
+
+        .request-info.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .request-info span {
+            color: var(--gold-primary);
+            font-weight: 700;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* POPUP MODAL — WhatsApp channels only */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            border-radius: 2rem;
+            padding: 2rem 2rem 1.8rem;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(255,0,255,0.4);
+            border: 1px solid rgba(255, 0, 255, 0.4);
+            text-align: center;
+            animation: modalPop 0.25s ease;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-card h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.8rem;
+        }
+
+        .modal-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 1.5rem 0 1.2rem;
+        }
+
+        .modal-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: white;
+            padding: 0.85rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            border: 1px solid rgba(255, 0, 255, 0.25);
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .modal-links a i {
+            color: var(--gold-primary);
+            font-size: 1.3rem;
+        }
+
+        .modal-links a:hover {
+            border-color: var(--gold-primary);
+            background: #fdf2ff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(255, 0, 255, 0.2);
+        }
+
+        .close-modal {
+            background: linear-gradient(135deg, #ff00ff, #cc00cc);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 20px rgba(255, 0, 255, 0.3);
+        }
+
+        .close-modal:hover {
+            background: linear-gradient(135deg, #ff66ff, #ff00ff);
+            transform: scale(0.97);
+            box-shadow: 0 12px 24px rgba(255, 0, 255, 0.4);
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 2rem 1.5rem 1.6rem; border-radius: 2rem; }
+            .header h1 { font-size: 1.9rem; }
+            .btn-bomb { font-size: 1.05rem; padding: 1rem; }
+            .channel-links { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <!-- floating background orbs -->
+    <div class="bg-elements">
+        <div class="floating-orb orb1"></div>
+        <div class="floating-orb orb2"></div>
+        <div class="floating-orb orb3"></div>
+    </div>
+
+<div class="card">
+
+    <div class="header">
+        <div class="icon">
+            <i class="fas fa-meteor"></i>
+        </div>
+        <h1>AYub khAn <span>SMS BOMBER</span></h1>
+        <p class="sub"><strong>⚡ POWERED BY AYub khAn</strong></p>
+    </div>
+
+    <div class="popup-trigger">
+        <button type="button" id="openChannelPopup"><i class="fab fa-whatsapp"></i>Join Us</button>
+    </div>
+
+    <form id="bomberForm">
+        <div class="form-group">
+            <label for="phoneInput"><i class="fas fa-mobile-screen-button"></i> Target Phone</label>
+            <div class="input-wrapper">
+                <span class="prefix">+92</span>
+                <input type="text" id="phoneInput" placeholder="3123456789" value="" required />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="countInput"><i class="fas fa-layer-group"></i> Bomb Count</label>
+            <div class="input-wrapper">
+                <input type="number" id="countInput" placeholder="10-50" value="10" min="1" max="50" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn-bomb" id="bombBtn">
+            <span class="btn-text">
+                <i class="fas fa-fire-flame-curved"></i> Start Bombing 💣💥
+            </span>
+            <span class="btn-loader">
+                <span class="spinner"></span>
+                <span id="btnStatus">Initializing...</span>
+            </span>
+        </button>
+    </form>
+
+    <div id="responseBox">
+        <i class="fas fa-shield-halved"></i>
+        <span id="responseText">🛡️ System Ready. Awaiting target.</span>
+    </div>
+
+    <div class="request-info" id="requestInfo">
+        📡 <span id="reqDisplay"></span>
+    </div>
+
+    <div class="footer">
+        <div class="dev">
+            <strong>POWERED BY AYUB KHAN</strong>
+        </div>
+        <div class="channel-links">
+            <a href="https://whatsapp.com/channel/0029Vb6RX1XEQIal7mdufD2e" target="_blank"><i class="fab fa-whatsapp"></i> UPDATES CHANNEL</a>
+            <a href="https://whatsapp.com/channel/0029VbDatj496H4Vjh9WVt3y" target="_blank"><i class="fab fa-whatsapp"></i> MY TELENOR ANSWERS</a>
+            <a href="https://Wa.me/923177473473" target="_blank"><i class="fas fa-phone"></i> CONTACT ME [𝗔𝗬𝗨𝗕 𝗞𝗛𝗔𝗡] 🥰</a>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL OVERLAY — WhatsApp channels + contact -->
+<div class="modal-overlay" id="channelModal">
+    <div class="modal-card">
+        <h3>📢 WhatsApp Channels</h3>
+        <p style="color:#4a4a6a; font-weight:500; margin-bottom: 0.5rem;">Stay connected & get updates</p>
+        <div class="modal-links">
+            <a href="https://whatsapp.com/channel/0029Vb6RX1XEQIal7mdufD2e" target="_blank"><i class="fab fa-whatsapp"></i> UPDATES CHANNEL</a>
+            <a href="https://whatsapp.com/channel/0029VbDatj496H4Vjh9WVt3y" target="_blank"><i class="fab fa-whatsapp"></i> MY TELENOR ANSWERS</a>
+            <a href="https://Wa.me/923177473473" target="_blank"><i class="fas fa-phone"></i> CONTACT ME [𝗔𝗬𝗨𝗕 𝗞𝗛𝗔𝗡]</a>
+        </div>
+        <button class="close-modal" id="closeModalBtn">Close</button>
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // Popup functionality
+        const modalOverlay = document.getElementById('channelModal');
+        const openPopupBtn = document.getElementById('openChannelPopup');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        openPopupBtn.addEventListener('click', () => {
+            modalOverlay.classList.add('active');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modalOverlay.classList.remove('active');
+        });
+
+        // Close modal if clicking outside
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                modalOverlay.classList.remove('active');
+            }
+        });
+
+        // ---------- BOMBER LOGIC ----------
+        const form = document.getElementById('bomberForm');
+        const phoneInput = document.getElementById('phoneInput');
+        const countInput = document.getElementById('countInput');
+        const bombBtn = document.getElementById('bombBtn');
+        const responseText = document.getElementById('responseText');
+        const responseIcon = document.getElementById('responseBox').querySelector('i');
+        const requestInfo = document.getElementById('requestInfo');
+        const reqDisplay = document.getElementById('reqDisplay');
+        let btnStatus = document.getElementById('btnStatus');
+
+        const API_BASE = 'https://smsbomberapi-ruby.vercel.app/api/send';
+
+        function setResponse(message, type = 'info') {
+            const iconMap = {
+                'success': 'fa-circle-check',
+                'error': 'fa-triangle-exclamation',
+                'warning': 'fa-circle-exclamation',
+                'info': 'fa-shield-halved'
+            };
+            const colorMap = {
+                'success': '#10b981',
+                'error': '#ef4444',
+                'warning': '#f59e0b',
+                'info': '#ff00ff'
+            };
+            responseIcon.className = `fas ${iconMap[type] || 'fa-shield-halved'}`;
+            responseIcon.style.color = colorMap[type];
+            responseText.textContent = message;
+            document.getElementById('responseBox').style.borderLeftColor = colorMap[type];
+            document.getElementById('responseBox').style.boxShadow = `0 4px 15px ${colorMap[type]}30`;
+        }
+
+        function showRequestInfo(text) {
+            reqDisplay.textContent = text;
+            requestInfo.classList.add('show');
+            setTimeout(() => requestInfo.classList.remove('show'), 5000);
+        }
+
+        function normalizePhoneNumber(rawPhone) {
+            let cleaned = rawPhone.replace(/[^\d+]/g, '');
+            cleaned = cleaned.replace(/^(\+92|92|0)/, '');
+            return cleaned;
+        }
+
+        function validatePhone(normalizedPhone) {
+            return normalizedPhone.length === 10 && /^[3]/.test(normalizedPhone);
+        }
+
+        async function sendBomb(cleanPhone, count) {
+            try {
+                const url = `${API_BASE}?phone=${cleanPhone}&count=${count}`;
+                showRequestInfo(`Executing API: phone=${cleanPhone}&count=${count}`);
+
+                let response;
+                try {
+                    response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+                } catch (corsError) {
+                    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+                    response = await fetch(proxyUrl, { method: 'GET', headers: { 'Accept': 'application/json' } });
+                }
+
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    setResponse(`✅ ${data.message || 'Strike successful!'}`, 'success');
+                } else {
+                    setResponse(`❌ ${data.message || data.error || 'Server error'}`, 'error');
+                }
+            } catch (error) {
+                setResponse(`❌ System Error: ${error.message}`, 'error');
+            } finally {
+                bombBtn.classList.remove('loading');
+                bombBtn.innerHTML = `
+                    <span class="btn-text"><i class="fas fa-fire-flame-curved"></i> Start Bombing 💣💥</span>
+                    <span class="btn-loader"><span class="spinner"></span><span id="btnStatus">Initializing...</span></span>
+                `;
+                const newStatus = document.getElementById('btnStatus');
+                if (newStatus) btnStatus = newStatus;
+            }
+        }
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const rawPhone = phoneInput.value.trim();
+            const countStr = countInput.value.trim();
+            const count = parseInt(countStr, 10);
+
+            if (!rawPhone) { setResponse('📱 Please enter target phone number', 'warning'); return; }
+            const normalizedPhone = normalizePhoneNumber(rawPhone);
+            if (!validatePhone(normalizedPhone)) { setResponse('⚠️ Invalid Pakistani number (03xx, +923xx)', 'error'); return; }
+            if (!countStr || isNaN(count) || count < 1) { setResponse('🔢 Bomb count must be at least 1', 'warning'); return; }
+            if (count > 100) { setResponse('🚫 Max payload capacity is 100 per strike', 'error'); return; }
+
+            bombBtn.classList.add('loading');
+            const currentStatus = document.getElementById('btnStatus');
+            if (currentStatus) currentStatus.textContent = 'Transmitting...';
+            setResponse(`📤 Locking target: ${normalizedPhone} | Payload: ${count}x`, 'info');
+
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            await sendBomb(normalizedPhone, count);
+        });
+
+        console.log('[READY] AYub khAn Bomber + WhatsApp channels active');
+    })();
+</script>
+</body>
+</html>
